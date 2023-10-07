@@ -3,16 +3,27 @@ const jwt = require('jsonwebtoken');
 const session = require('express-session')
 const customer_routes = require('./router/auth_users.js').authenticated;
 const genl_routes = require('./router/general.js').general;
-
+const axios = require('axios')
 const app = express();
 
 app.use(express.json());
 
-app.use("/customer",session({secret:"fingerprint_customer",resave: true, saveUninitialized: true}))
 
+app.use("/customer",session({secret:"fingerprint_customer",resave: true, saveUninitialized: true}))
 app.use("/customer/auth/*", function auth(req,res,next){
-//Write the authenication mechanism here
-});
+        const token = req.session.userId;
+        if (token){
+        jwt.verify(token , 'omar ahmed something' , (err , decodedToken) => {
+            if (err) {
+                console.log(err)
+            } else {
+                console.log(decodedToken)
+                next()
+            }
+        })}
+        else{
+    
+        }});
  
 const PORT =3000;
 
